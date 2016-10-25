@@ -16,6 +16,7 @@ struct Photo {
     let farm: Int
     let title: String
     let imageUrl: URL
+    var placeTitle: String?
     
     init(json: Json) throws {
         guard let id = json[Keys.id] as? String else {
@@ -49,12 +50,12 @@ struct Photo {
         self.farm = farm
         self.title = title
         
-        let path = "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret)_\(FlickrImageSize.large.rawValue).jpg"
+        let path = "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret)_\(FlickrImageSize.medLarge.rawValue).jpg"
         self.imageUrl = URL(string: path)!
     }
     
-    static func photos(querying query: String, completion: @escaping ([Photo]) -> Void) {
-        let photosRequest = Router.photosForPlace(query).urlRequest
+    static func photos(querying query: WhereOnEarth, completion: @escaping ([Photo]) -> Void) {
+        let photosRequest = Router.photosForPlace(query.woe_id).urlRequest
         URLSession.shared.dataTask(with: photosRequest) { (data, response, error) in
             if let _ = error {
                 return
@@ -72,7 +73,8 @@ struct Photo {
             var photos = [Photo]()
             for result in results {
                 do {
-                    let photo = try Photo(json: result)
+                    var photo = try Photo(json: result)
+                    photo.placeTitle = query.woe_name
                     photos.append(photo)
                 } catch let error {
                     print(error)

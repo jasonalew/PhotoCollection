@@ -77,7 +77,7 @@ enum Router {
             queryItems += photosForPlaceQueryItems
             // Gets request for Where on Earth ID from place query
         case .whereIdForQuery(let query):
-            let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+            let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
             let whereIdQueryItems = [
                 URLQueryItem(name: "method", value: "flickr.places.find"),
                 URLQueryItem(name: Keys.query, value: encodedQuery)

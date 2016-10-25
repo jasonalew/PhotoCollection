@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 struct ReuseIdentifier {
     static let main = "PhotoCell"
@@ -15,23 +16,43 @@ struct ReuseIdentifier {
 
 class PhotoCollectionViewController: UICollectionViewController {
 
-    var photos: [[Photo]]!
-    let places = ["Paris", "Berlin", "Venice"]
+    var photos = [[Photo]]()
+    let places = ["Paris", "Venice", "Tokyo"]
+    var cellSize: CGSize {
+        return UIScreen.main.bounds.size
+    }
     
     @IBOutlet var mainCollectionView: UICollectionView!
+    @IBOutlet weak var mainFlowLayout: MarginFlowLayout!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Setup a 2D array
         photos = Array(repeating: [Photo](), count: places.count)
+        mainCollectionView.isPagingEnabled = false
+        mainCollectionView.decelerationRate = UIScrollViewDecelerationRateFast
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadPhotos()
+    }
+    
+    func loadPhotos() {
         // Get the Where on Earth ID from the places array
         for (index, place) in places.enumerated() {
-            WhereOnEarth.topPlace(querying: place) { (woe) in
-                // Get the photos for the places
-                Photo.photos(querying: woe.woe_id) { (photos) in
-                    DispatchQueue.main.async {
-                        self.photos[index] = photos
+            DispatchQueue.main.async {
+                WhereOnEarth.topPlace(querying: place) { (woe) in
+                    // Get the photos for the places
+                    Photo.photos(querying: woe) { (photos) in
+                        DispatchQueue.main.async {
+                            self.photos[index] = photos
+                            if self.photos.count == self.places.count {
+                                // Reload the collection view when the last results is received
+                                self.mainCollectionView.reloadData()
+                            }
+                        }
                     }
                 }
             }
@@ -63,15 +84,45 @@ class PhotoCollectionViewController: UICollectionViewController {
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.main, for: indexPath) as? PhotoCollectionViewCell {
-            
-            return cell
-        } else if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.child, for: indexPath) as? ChildCollectionViewCell {
-            cell.imageUrl = photos[collectionView.tag][indexPath.item].imageUrl
-            
+        // If it's the main collection view, just return the subclass cell
+        if collectionView == mainCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.main, for: indexPath) as? PhotoCollectionViewCell else {
+                print("No main cell")
+                fatalError()
+            }
             return cell
         } else {
-            fatalError()
+            // Set the cells for the child collection views
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.child, for: indexPath) as? ChildCollectionViewCell else {
+                print("No child cell")
+                fatalError()
+            }
+            let photo = photos[collectionView.tag][indexPath.item]
+            cell.imageUrl = photo.imageUrl
+            if indexPath.item == 0 {
+                cell.titleLabel.text = photo.placeTitle ?? ""
+            } else {
+                cell.titleLabel.text = ""
+            }
+            
+            cell.childImageView.sd_setImage(with: cell.imageUrl, completed: { (image, error, cacheType, url) in
+                if cacheType == SDImageCacheType.none {
+                    cell.childImageView.alpha = 0
+                    UIView.animate(withDuration: 1.3, animations: {
+                        cell.childImageView.alpha = 1.0
+                    })
+                } else {
+                    cell.childImageView.alpha = 1.0
+                }
+            })
+            cell.childImageView.sd_setImage(with: cell.imageUrl)
+            return cell
         }
+    }
+}
+
+extension PhotoCollectionViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return cellSize
     }
 }

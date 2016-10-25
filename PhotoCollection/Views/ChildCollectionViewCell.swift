@@ -12,9 +12,11 @@ class ChildCollectionViewCell: UICollectionViewCell {
     var imageUrl: URL?
     
     @IBOutlet weak var childImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
     
     override func prepareForReuse() {
         imageUrl = nil
         childImageView.image = nil
+        titleLabel.text = ""
     }
 }

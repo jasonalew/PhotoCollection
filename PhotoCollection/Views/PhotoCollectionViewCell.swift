@@ -13,11 +13,13 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var childCollectionView: UICollectionView!
+    @IBOutlet weak var childFlowLayout: UICollectionViewFlowLayout!
     
     // The D type conforms to UICollectionView Delegate and DataSource protocols
     func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(delegate: D, forItem item: Int) {
         childCollectionView.delegate = delegate
         childCollectionView.dataSource = delegate
+        // Set the tag to the main collection view's item index so that we can pull the correct array for the data
         childCollectionView.tag = item
         childCollectionView.reloadData()
     }
