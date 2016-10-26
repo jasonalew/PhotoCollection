@@ -16,8 +16,8 @@ struct ReuseIdentifier {
 
 class PhotoCollectionViewController: UICollectionViewController {
 
-    var photos = [[Photo]]()
-    let places = ["Paris", "Venice", "Tokyo"]
+    var photos: [[Photo]]!
+    let places = ["Paris", "Venice", "Kyoto", "Los Angeles"]
     var cellSize: CGSize {
         return UIScreen.main.bounds.size
     }
@@ -32,11 +32,12 @@ class PhotoCollectionViewController: UICollectionViewController {
         photos = Array(repeating: [Photo](), count: places.count)
         mainCollectionView.isPagingEnabled = false
         mainCollectionView.decelerationRate = UIScrollViewDecelerationRateFast
+        loadPhotos()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        loadPhotos()
+        
     }
     
     func loadPhotos() {
