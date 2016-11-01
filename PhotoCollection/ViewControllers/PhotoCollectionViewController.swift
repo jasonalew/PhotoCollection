@@ -21,6 +21,7 @@ class PhotoCollectionViewController: UICollectionViewController {
     var cellSize: CGSize {
         return UIScreen.main.bounds.size
     }
+    lazy var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     @IBOutlet var mainCollectionView: UICollectionView!
     @IBOutlet weak var mainFlowLayout: MarginFlowLayout!
@@ -30,8 +31,16 @@ class PhotoCollectionViewController: UICollectionViewController {
         super.viewDidLoad()
         // Setup a 2D array
         photos = Array(repeating: [Photo](), count: places.count)
+        
+        // Setup collection view
         mainCollectionView.isPagingEnabled = false
         mainCollectionView.decelerationRate = UIScrollViewDecelerationRateFast
+        
+        // Setup activity indicator
+        activityIndicator.center = view.center
+        view.addSubview(activityIndicator)
+        activityIndicator.hidesWhenStopped = true
+        
         loadPhotos()
     }
     
@@ -41,6 +50,7 @@ class PhotoCollectionViewController: UICollectionViewController {
     }
     
     func loadPhotos() {
+        activityIndicator.startAnimating()
         // Get the Where on Earth ID from the places array
         for (index, place) in places.enumerated() {
             DispatchQueue.main.async {
@@ -52,6 +62,7 @@ class PhotoCollectionViewController: UICollectionViewController {
                             if self.photos.count == self.places.count {
                                 // Reload the collection view when the last results is received
                                 self.mainCollectionView.reloadData()
+                                self.activityIndicator.stopAnimating()
                             }
                         }
                     }
@@ -106,17 +117,17 @@ class PhotoCollectionViewController: UICollectionViewController {
                 cell.titleLabel.text = ""
             }
             
-            cell.childImageView.sd_setImage(with: cell.imageUrl, completed: { (image, error, cacheType, url) in
+            cell.childImageView.sd_setImage(with: cell.imageUrl!, completed: { (image, error, cacheType, url) in
+                // Fade in the image if it isn't in the cache
                 if cacheType == SDImageCacheType.none {
                     cell.childImageView.alpha = 0
-                    UIView.animate(withDuration: 1.3, animations: {
-                        cell.childImageView.alpha = 1.0
+                    UIView.animate(withDuration: 0.3, animations: { 
+                        cell.childImageView.alpha = 1
                     })
                 } else {
-                    cell.childImageView.alpha = 1.0
+                    cell.childImageView.alpha = 1
                 }
             })
-            cell.childImageView.sd_setImage(with: cell.imageUrl)
             return cell
         }
     }
