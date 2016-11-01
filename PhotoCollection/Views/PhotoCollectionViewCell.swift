@@ -21,12 +21,14 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         childCollectionView.dataSource = delegate
         // Set the tag to the main collection view's item index so that we can pull the correct array for the data
         childCollectionView.tag = item
+        childCollectionView.contentOffset = CGPoint.zero
         childCollectionView.reloadData()
     }
     
     override func prepareForReuse() {
         mainImageView.image = nil
         imageUrl = nil
+        childCollectionView.contentOffset = CGPoint.zero
     }
 }
 
