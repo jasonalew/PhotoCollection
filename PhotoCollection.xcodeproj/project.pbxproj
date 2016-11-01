@@ -54,7 +54,7 @@
 		5569E7F71DBF0EAC00C0393E /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		5569E7F91DBF280300C0393E /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		5569E7FB1DBFB48800C0393E /* ChildCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChildCollectionViewCell.swift; sourceTree = "<group>"; };
-		5569E7FD1DBFC20800C0393E /* PhotoCollection-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhotoCollection-Bridging-Header.h"; sourceTree = "<group>"; };
+		5569E7FD1DBFC20800C0393E /* PhotoCollection-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "PhotoCollection-Bridging-Header.h"; path = "PhotoCollection/ViewControllers/PhotoCollection-Bridging-Header.h"; sourceTree = "<group>"; };
 		5569E8001DBFD9EC00C0393E /* MarginFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarginFlowLayout.swift; sourceTree = "<group>"; };
 		6CCF37B575A39CC883A5BDD5 /* Pods-PhotoCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoCollection.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoCollection/Pods-PhotoCollection.release.xcconfig"; sourceTree = "<group>"; };
 		A918BAEFF7F962567820DDE9 /* Pods_PhotoCollectionTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PhotoCollectionTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				553F42481DBEB95500DBD297 /* PhotoCollection */,
+				5569E7FD1DBFC20800C0393E /* PhotoCollection-Bridging-Header.h */,
 				553F425D1DBEB95500DBD297 /* PhotoCollectionTests */,
 				553F42471DBEB95500DBD297 /* Products */,
 				87A958505F071829FDD33D29 /* Pods */,
@@ -131,7 +132,6 @@
 			isa = PBXGroup;
 			children = (
 				5569E7F31DBF083000C0393E /* PhotoCollectionViewController.swift */,
-				5569E7FD1DBFC20800C0393E /* PhotoCollection-Bridging-Header.h */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

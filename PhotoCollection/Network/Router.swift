@@ -60,6 +60,7 @@ enum Router {
     }
     
     var urlRequest: URLRequest {
+        // Base query items required for all calls
         var queryItems = [
             URLQueryItem(name: "format", value: "json"),
             URLQueryItem(name: "nojsoncallback", value: "1"),
@@ -77,6 +78,7 @@ enum Router {
             queryItems += photosForPlaceQueryItems
             // Gets request for Where on Earth ID from place query
         case .whereIdForQuery(let query):
+            // Concatenate words with a '+' in search query.
             let plusEncodedQuery = query.replacingOccurrences(of: " ", with: "+")
             let encodedQuery = plusEncodedQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
             let whereIdQueryItems = [
@@ -93,5 +95,4 @@ enum Router {
         
         return urlRequest
     }
-    
 }
