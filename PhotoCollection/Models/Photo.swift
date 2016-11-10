@@ -17,7 +17,9 @@ struct Photo {
     let title: String
     let imageUrl: URL
     var placeTitle: String?
-    
+}
+
+extension Photo {
     init(json: Json) throws {
         guard let id = json[Keys.id] as? String else {
             throw SerializtionError.missingKey(Keys.id)

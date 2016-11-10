@@ -11,7 +11,9 @@ import Foundation
 struct WhereOnEarth {
     let woe_id: String
     let woe_name: String
-    
+}
+
+extension WhereOnEarth {
     init(json: Json) throws {
         guard let woeid = json["woeid"] as? String else {
             throw SerializtionError.missingKey(Keys.woe_id)
