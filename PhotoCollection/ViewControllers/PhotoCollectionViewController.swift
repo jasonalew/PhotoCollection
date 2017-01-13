@@ -44,42 +44,36 @@ class PhotoCollectionViewController: UICollectionViewController {
         loadPhotos()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-    }
-    
     func loadPhotos() {
         activityIndicator.startAnimating()
+        let photosGroup = DispatchGroup()
         // Get the Where on Earth ID from the places array
-        for (index, place) in places.enumerated() {
-            DispatchQueue.main.async {
-                WhereOnEarth.topPlace(querying: place) { (woe) in
-                    // Get the photos for the places
-                    Photo.photos(querying: woe) { (photos) in
-                        DispatchQueue.main.async {
-                            self.photos[index] = photos
-                            if self.photos.count == self.places.count {
-                                // Reload the collection view when the last results is received
-                                self.mainCollectionView.reloadData()
-                                self.activityIndicator.stopAnimating()
-                            }
-                        }
-                    }
+        for (index, place) in self.places.enumerated() {
+            photosGroup.enter()
+            WhereOnEarth.topPlace(querying: place) { (woe) in
+            // Get the photos for the places
+                Photo.photos(querying: woe) { (photos) in
+                    self.photos[index] = photos
+                    photosGroup.leave()
                 }
             }
+        }
+        photosGroup.notify(queue: DispatchQueue.main) { 
+            // Reload the collection view when the group is finished
+            self.mainCollectionView.reloadData()
+            self.activityIndicator.stopAnimating()
         }
     }
 
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
 
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView,
+                                 numberOfItemsInSection section: Int) -> Int {
         if collectionView == mainCollectionView {
             return photos.count
         } else {
@@ -88,24 +82,31 @@ class PhotoCollectionViewController: UICollectionViewController {
     }
     
     // Set the DataSource, Delegate and Tag of the collection view inside the cell.
-    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView,
+                                 willDisplay cell: UICollectionViewCell,
+                                 forItemAt indexPath: IndexPath) {
         guard let photoCell = cell as? PhotoCollectionViewCell else {
             return
         }
         photoCell.setCollectionViewDataSourceDelegate(delegate: self, forItem: indexPath.item)
     }
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    override func collectionView(_ collectionView: UICollectionView,
+                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // If it's the main collection view, just return the subclass cell
         if collectionView == mainCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.main, for: indexPath) as? PhotoCollectionViewCell else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ReuseIdentifier.main,
+                for: indexPath) as? PhotoCollectionViewCell else {
                 print("No main cell")
                 fatalError()
             }
             return cell
         } else {
             // Set the cells for the child collection views
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.child, for: indexPath) as? ChildCollectionViewCell else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ReuseIdentifier.child,
+                for: indexPath) as? ChildCollectionViewCell else {
                 print("No child cell")
                 fatalError()
             }
@@ -117,7 +118,8 @@ class PhotoCollectionViewController: UICollectionViewController {
                 cell.titleLabel.text = ""
             }
             
-            cell.childImageView.sd_setImage(with: cell.imageUrl!, completed: { (image, error, cacheType, url) in
+            cell.childImageView.sd_setImage(with: cell.imageUrl!,
+                                            completed: { (image, error, cacheType, url) in
                 // Fade in the image if it isn't in the cache
                 if cacheType == SDImageCacheType.none {
                     cell.childImageView.alpha = 0
@@ -134,7 +136,9 @@ class PhotoCollectionViewController: UICollectionViewController {
 }
 
 extension PhotoCollectionViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         return cellSize
     }
 }
