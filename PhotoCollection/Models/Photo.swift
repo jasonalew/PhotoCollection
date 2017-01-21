@@ -22,27 +22,27 @@ struct Photo {
 extension Photo {
     init(json: Json) throws {
         guard let id = json[Keys.id] as? String else {
-            throw SerializtionError.missingKey(Keys.id)
+            throw SerializationError.missingKey(Keys.id)
         }
         
         guard let owner = json[Keys.owner] as? String else {
-            throw SerializtionError.missingKey(Keys.owner)
+            throw SerializationError.missingKey(Keys.owner)
         }
         
         guard let secret = json[Keys.secret] as? String else {
-            throw SerializtionError.missingKey(Keys.secret)
+            throw SerializationError.missingKey(Keys.secret)
         }
         
         guard let server = json[Keys.server] as? String else {
-            throw SerializtionError.missingKey(Keys.server)
+            throw SerializationError.missingKey(Keys.server)
         }
         
         guard let farm = json[Keys.farm] as? Int else {
-            throw SerializtionError.missingKey(Keys.farm)
+            throw SerializationError.missingKey(Keys.farm)
         }
         
         guard let title = json[Keys.title] as? String else {
-            throw SerializtionError.missingKey(Keys.title)
+            throw SerializationError.missingKey(Keys.title)
         }
         
         self.id = id

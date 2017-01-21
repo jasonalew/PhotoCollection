@@ -16,11 +16,11 @@ struct WhereOnEarth {
 extension WhereOnEarth {
     init(json: Json) throws {
         guard let woeid = json["woeid"] as? String else {
-            throw SerializtionError.missingKey(Keys.woe_id)
+            throw SerializationError.missingKey(Keys.woe_id)
         }
         
         guard let woe_name = json["woe_name"] as? String else {
-            throw SerializtionError.missingKey("woe_name")
+            throw SerializationError.missingKey("woe_name")
         }
         
         self.woe_id = woeid

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SerializtionError: Error {
+enum SerializationError: Error {
     case missingKey(String)
     case invalidData
 }
